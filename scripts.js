@@ -7,7 +7,9 @@ let matches = books;
 
 const starting = document.createDocumentFragment();
 
-for (const { author, id, image, title } of matches.slice(0, BOOKS_PER_PAGE)) {
+// preview abstraction
+
+function createPreviewElement ({ author, id, image, title }) {
   const element = document.createElement("button");
   element.classList = "preview";
   element.setAttribute("data-preview", id);
@@ -24,10 +26,16 @@ for (const { author, id, image, title } of matches.slice(0, BOOKS_PER_PAGE)) {
         </div>
     `;
 
-  starting.appendChild(element);
+  return element
+}
+ const startingFragment = document.createDocumentFragment();
+
+for (const book of matches.slice(0, BOOKS_PER_PAGE)) {
+  const element = createPreviewElement(book);
+  startingFragment.appendChild(element);
 }
 
-document.querySelector("[data-list-items]").appendChild(starting);
+document.querySelector("[data-list-items]").appendChild(startingFragment);
 
 const genreHtml = document.createDocumentFragment();
 const firstGenreElement = document.createElement("option");
@@ -76,7 +84,7 @@ document.querySelector("[data-list-button]").innerText = `Show more (${
   books.length - BOOKS_PER_PAGE
 })`;
 document.querySelector("[data-list-button]").disabled =
-  matches.length - page * BOOKS_PER_PAGE > 0;
+  matches.length - page * BOOKS_PER_PAGE < 0;
 
 document.querySelector("[data-list-button]").innerHTML = `
     <span>Show more</span>
@@ -180,29 +188,6 @@ document
     document.querySelector("[data-list-items]").innerHTML = "";
     const newItems = document.createDocumentFragment();
 
-    for (const { author, id, image, title } of result.slice(
-      0,
-      BOOKS_PER_PAGE
-    )) {
-      const element = document.createElement("button");
-      element.classList = "preview";
-      element.setAttribute("data-preview", id);
-
-      element.innerHTML = `
-            <img
-                class="preview__image"
-                src="${image}"
-            />
-            
-            <div class="preview__info">
-                <h3 class="preview__title">${title}</h3>
-                <div class="preview__author">${authors[author]}</div>
-            </div>
-        `;
-
-      newItems.appendChild(element);
-    }
-
     document.querySelector("[data-list-items]").appendChild(newItems);
     document.querySelector("[data-list-button]").disabled =
       matches.length - page * BOOKS_PER_PAGE < 1;
@@ -223,30 +208,14 @@ document
 document.querySelector("[data-list-button]").addEventListener("click", () => {
   const fragment = document.createDocumentFragment();
 
-  for (const { author, id, image, title } of matches.slice(
-    page * BOOKS_PER_PAGE,
-    (page + 1) * BOOKS_PER_PAGE
-  )) {
-    const element = document.createElement("button");
-    element.classList = "preview";
-    element.setAttribute("data-preview", id);
+  //preview image abstraction
 
-    element.innerHTML = `
-            <img
-                class="preview__image"
-                src="${image}"
-            />
-            
-            <div class="preview__info">
-                <h3 class="preview__title">${title}</h3>
-                <div class="preview__author">${authors[author]}</div>
-            </div>
-        `;
-
-    fragment.appendChild(element);
+  for (const book of matches.slice((BOOKS_PER_PAGE*page),( BOOKS_PER_PAGE*(page+1)))) {
+    const element = createPreviewElement(book);
+    startingFragment.appendChild(element);
   }
 
-  document.querySelector("[data-list-items]").appendChild(fragment);
+  document.querySelector("[data-list-items]").appendChild(startingFragment);
   page += 1;
 });
 
