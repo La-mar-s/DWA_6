@@ -1,6 +1,7 @@
 // Fully working scripts.js file
 
 import { books, authors, genres, BOOKS_PER_PAGE } from "./data.js";
+import { createPreviewElement } from "./book.js";
 
 let page = 1;
 let matches = books;
@@ -9,25 +10,6 @@ const starting = document.createDocumentFragment();
 
 // preview abstraction
 
-function createPreviewElement ({ author, id, image, title }) {
-  const element = document.createElement("button");
-  element.classList = "preview";
-  element.setAttribute("data-preview", id);
-
-  element.innerHTML = `
-        <img
-            class="preview__image"
-            src="${image}"
-        />
-        
-        <div class="preview__info">
-            <h3 class="preview__title">${title}</h3>
-            <div class="preview__author">${authors[author]}</div>
-        </div>
-    `;
-
-  return element
-}
  const startingFragment = document.createDocumentFragment();
 
 for (const book of matches.slice(0, BOOKS_PER_PAGE)) {
@@ -66,6 +48,8 @@ for (const [id, name] of Object.entries(authors)) {
 }
 
 document.querySelector("[data-search-authors]").appendChild(authorsHtml);
+
+//try abraction
 
 if (
   window.matchMedia &&
@@ -120,6 +104,8 @@ document.querySelector("[data-list-close]").addEventListener("click", () => {
   document.querySelector("[data-list-active]").open = false;
 });
 
+//try abraction
+
 document
   .querySelector("[data-settings-form]")
   .addEventListener("submit", (event) => {
@@ -144,6 +130,8 @@ document
     document.querySelector("[data-settings-overlay]").open = false;
   });
 
+  //try abstraction
+  
 document
   .querySelector("[data-search-form]")
   .addEventListener("submit", (event) => {
